@@ -4,6 +4,8 @@ library(httr)
 library(rlang)
 library(dplyr)
 
+# -----------------------Cleaning up Education---------------------
+
 #Resource: https://ivelasq.rbind.io/blog/tidying-census-data/
 ## OR go find R script in computer 
 
@@ -172,6 +174,23 @@ census_sheet5<- subset(census_sheet4, select = -c(1))
 ##To Do:
 #I need to figure out how to turn Male/Female Total Population by zip into a column var
 
-
+# -----------------------Cleaning up Total Populations---------------------
+  #Telling R where to look
+  setwd("~/Data/Population Estimates")
+  
+  getwd()
+  
+  #Calling in data and viewing it
+  census_poptotal <- read_csv("Census_D12_Census_Tracts_ACS_2019_PopTotal.csv")
+  # view(census_sheet1)
+  
+  #Deleting spaces
+  census_poptotal_1 <- 
+    census_poptotal %>% 
+    mutate(ZIP = str_trim(census_poptotal$ZIP, side = "both"),
+           TOTAL = str_trim(census_poptotal$TOTAL, side = "both"))
+  
+  #Saving census_poptotal_1 as excel 
+  write.csv(census_poptotal_1, "census_poptotal_clean.csv")
 
 
