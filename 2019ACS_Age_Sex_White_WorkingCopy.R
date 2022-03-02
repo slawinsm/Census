@@ -1,11 +1,12 @@
+#Purpose: This script is used to clean the age/sex demographic estimates among people who identify as white by zip code. Data is pulled from the Census
+
 #Loading libraries
 library(tidyverse)
 library(readxl)
 library(httr)
 library(rlang)
 library(dplyr)
-
-#janitor
+library(janitor)
 
 #Understanding which path directory R is looking at
 getwd()
@@ -25,6 +26,7 @@ acs_agesex_white2 <- acs_agesex_white2 %>%
   relocate(3, .before=2) #Just specify which columns you want to relocate from and where to
 view(acs_agesex_white2)
 
+#Creating data dictionary right now in Excel for all the variables
 #Renaming column headers with a vector
 updated_names <-
   c("ID", "ZIP", 
