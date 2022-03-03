@@ -124,6 +124,11 @@ census_sheet5<- subset(census_sheet4, select = -c(1))
 #Moving vars to beginning of data frame
   census_sheet6 <- census_sheet6 %>% 
     relocate(66, .before=1) #Just specify which columns you want to relocate from and where to
+  census_sheet6 <- census_sheet6 %>% 
+    relocate(66, .before=2)
+  census_sheet6 <- census_sheet6 %>% 
+    relocate(67, .before=3)
+  
   view(census_sheet6)
 
 #Deleting percent rows
