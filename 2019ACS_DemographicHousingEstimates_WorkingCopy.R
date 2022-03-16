@@ -223,6 +223,9 @@ acs_demohouse7$Zipcode <- gsub("ZCTA5 ","",as.character(acs_demohouse7$Zipcode))
 
   view(acs_demohouse7)
   
+#Export data
+write_excel_csv(acs_demohouse7, "2019ACS_DemographicHousingEstimates_Clean.csv")
+  
 #This is all the data cleaning I will perform on this data set at this time
   
   
