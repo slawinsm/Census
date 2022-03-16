@@ -1,5 +1,10 @@
 #Purpose:This script is used to clean the demographic and housing estimates zip code data that I pulled from the Census
 
+#Notes:
+  #1. If you have ways to improve the code below, feel free to make changes and submit a code request
+  #2. To view the data dictionary associated with this data set, open the .xlsx file and it will be on sheet #2
+  #3. The Census does a great job with labeling their variables. However, my community will not want to have to figure out what "DP05_0019E" stands for
+
 #Loading libraries
 library(datapasta)
 library(tidyverse)
@@ -13,10 +18,10 @@ library(janitor)
 getwd()
 
 #Telling R where to look
-setwd("C:/Users/slawinskimc/OneDrive - Florida Department of Health/Documents/Projects/Resource Map/Data/Demographic & Housing Estimates")
+setwd("C:/Users/slawinskimc/OneDrive - Florida Department of Health/Documents/GitHub/Census")
 
 #Calling in data and viewing  it
-acs_demohouse  <- read_xlsx("2019ACS_DemographicHousingEstimates_WorkingCopy030722.xlsx", skip = 1)
+acs_demohouse  <- read_xlsx("2019ACS_DemographicHousingEstimates_WorkingCopy.xlsx", skip = 1)
   View(acs_demohouse)
 
 #Deleting columns with Margin labels
@@ -34,7 +39,7 @@ acs_demohouse4 <- acs_demohouse3  %>%
 
     view(acs_demohouse4)
 
-#Subsetting  out  the  columns  with  no  data
+#Subsetting  out  the  columns  with  no  data or duplicate data - see data dictionary sheet of data file 
 acs_demohouse5 <- subset(acs_demohouse4, select = -c(4, 10, 38, 51, 52, 58, 59, 60, 66, 67, 68, 73, 74, 117, 118, 142))
     view(acs_demohouse5)
     
@@ -212,7 +217,12 @@ acs_demohouse6  <-
   acs_demohouse5  %>%  
   set_names(updated_names)
 
-view(acs_demohouse6) 
+#Cleaning up Zipcode to not include 'ZCTA5 ' in the observations
+acs_demohouse7 <- acs_demohouse6
+acs_demohouse7$Zipcode <- gsub("ZCTA5 ","",as.character(acs_demohouse7$Zipcode))
 
-#Cleaning up ZIP
-
+  view(acs_demohouse7)
+  
+#This is all the data cleaning I will perform on this data set at this time
+  
+  
