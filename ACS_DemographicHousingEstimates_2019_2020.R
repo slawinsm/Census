@@ -1,9 +1,10 @@
-#Purpose:This script is used to clean the demographic and housing estimates zip code data that I pulled from the Census
+#Purpose:This script is used to clean the 2019 and 2020 demographic and housing estimates zip code data that I pulled from the Census
 
 #Notes:
   #1. If you have ways to improve the code below, feel free to make changes and submit a code request
-  #2. To view the data dictionary associated with this data set, open the .xlsx file and it will be on sheet #2
+  #2. To view the data dictionary associated with the either data set, open the associated .xlsx working file and it will be on sheet #2
   #3. The Census does a great job with labeling their variables. However, my community will not want to have to figure out what "DP05_0019E" stands for
+  #4. I know there are better ways to pull in Census data that may involve less cleaning but part of teaching myself how to clean data was to find some of the messier ways it is organized
 
 #Loading libraries
 library(datapasta)
@@ -21,28 +22,39 @@ getwd()
 setwd("C:/Users/slawinskimc/OneDrive - Florida Department of Health/Documents/GitHub/Census")
 
 #Calling in data and viewing  it
-acs_demohouse  <- read_xlsx("2019ACS_DemographicHousingEstimates_WorkingCopy.xlsx", skip = 1)
-  View(acs_demohouse)
+acs_demohouse_2019_1  <- read_xlsx("2019ACS_DemographicHousingEstimates_WorkingCopy.xlsx", skip = 1)
+acs_demohouse_2020_1  <- read_xlsx("2020ACS_DemographicHousingEstimates_WorkingCopy.xlsx", skip = 1)
+
+  # View(acs_demohouse_2019_1) #View allows us to see the data in more of an Excel tale format 
+                               #You can also double click the data frame in 'Environment' on the right-hand side
+                               #This is just my favorite way to view the data, but there are so many other wasy to do so
 
 #Deleting columns with Margin labels
-acs_demohouse2 <- select(acs_demohouse, -contains("Margin"))
-  View(acs_demohouse2)
+acs_demohouse_2019_2 <- select(acs_demohouse_2019_1, -contains("Margin"))
+acs_demohouse_2020_2 <- select(acs_demohouse_2020_1, -contains("Margin"))
+
+  # View(acs_demohouse_2019_2)
 
 #Moving vars to beginning of data frame
-acs_demohouse3  <-  acs_demohouse2 %>%  
+acs_demohouse_2019_3  <-  acs_demohouse_2019_2 %>%  
     relocate(180, .before=1)
 
-    view(acs_demohouse3)
+   # view(acs_demohouse_2019_3)
 
-acs_demohouse4 <- acs_demohouse3  %>%  
+acs_demohouse_2019_4 <- acs_demohouse_2019_3  %>%  
     relocate(180, .before=2)
 
-    view(acs_demohouse4)
+   # view(acs_demohouse_2019_4)
+
+acs_demohouse_2020_3  <-  acs_demohouse_2020_2 %>%  
+  relocate(180, .before=1)
+acs_demohouse_2020_4 <- acs_demohouse_2020_3  %>%  
+  relocate(180, .before=2)
 
 #Subsetting  out  the  columns  with  no  data or duplicate data - see data dictionary sheet of data file 
-acs_demohouse5 <- subset(acs_demohouse4, select = -c(4, 10, 38, 51, 52, 58, 59, 60, 66, 67, 68, 73, 74, 117, 118, 142))
-    view(acs_demohouse5)
-    
+acs_demohouse_2019_5 <- subset(acs_demohouse_2019_4, select = -c(4, 10, 38, 51, 52, 58, 59, 60, 66, 67, 68, 73, 74, 117, 118, 142, 174, 176))
+acs_demohouse_2020_5 <- subset(acs_demohouse_2020_4, select = -c(4, 10, 38, 51, 52, 58, 59, 60, 66, 67, 68, 73, 74, 117, 118, 142, 174, 176))
+
   #Renaming  column  variables
   #Use  data  dictionary
   updated_names  <-
@@ -204,28 +216,37 @@ acs_demohouse5 <- subset(acs_demohouse4, select = -c(4, 10, 38, 51, 52, 58, 59, 
     "NotHispanicLatino_TwoMore_ExcludeOtherThree_Estimate",
     "NotHispanicLatino_TwoMore_ExcludeOtherThree_Percent",
     "HousingUnits_Estimate",
-    "HousingUnits_Percent",
     "Vote_18andOver_Estimate",
-    "Vote_18andOver_Percent",
     "Vote_Male_18andOver_Estimate",
     "Vote_Male_18andOver_Percent",
     "Vote_Female_18andOver_Estimate",
     "Vote_Female_18andOver_Percent"
 )
 
-acs_demohouse6  <-
-  acs_demohouse5  %>%  
+acs_demohouse_2019_6  <-
+  acs_demohouse_2019_5  %>%  
   set_names(updated_names)
 
-#Cleaning up Zipcode to not include 'ZCTA5 ' in the observations
-acs_demohouse7 <- acs_demohouse6
-acs_demohouse7$Zipcode <- gsub("ZCTA5 ","",as.character(acs_demohouse7$Zipcode))
+acs_demohouse_2020_6  <-
+  acs_demohouse_2020_5  %>%  
+  set_names(updated_names)
 
-  view(acs_demohouse7)
+  # view(acs_demohouse_2019_6)
+  # view(acs_demohouse_2020_6)
+
+#Cleaning up Zipcode to not include 'ZCTA5 ' in the observations
+acs_demohouse_2019_7 <- acs_demohouse_2019_6
+acs_demohouse_2020_7 <- acs_demohouse_2020_6
+
+acs_demohouse_2019_7$Zipcode <- gsub("ZCTA5 ","",as.character(acs_demohouse_2019_7$Zipcode))
+acs_demohouse_2020_7$Zipcode <- gsub("ZCTA5 ","",as.character(acs_demohouse_2020_7$Zipcode))
+
+ #  view(acs_demohouse_2020_7)
   
 #Export data
-write_excel_csv(acs_demohouse7, "2019ACS_DemographicHousingEstimates_Clean.csv")
-  
-#This is all the data cleaning I will perform on this data set at this time
+write_excel_csv(acs_demohouse_2019_7, "2019ACS_DemographicHousingEstimates_Clean.csv")
+write_excel_csv(acs_demohouse_2020_7, "2020ACS_DemographicHousingEstimates_Clean.csv")
+
+#This is all the data cleaning I will perform on these data sets at this time
   
   
