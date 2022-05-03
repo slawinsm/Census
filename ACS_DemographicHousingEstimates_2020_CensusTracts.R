@@ -19,4 +19,13 @@ getwd()
 setwd("C:/Users/slawinskimc/OneDrive - Florida Department of Health/Documents/Projects/Resource Map/Data/Demographic & Housing Estimates")
 
 #Calling in data and viewing  it
-CT_2020_1  <- read_xlsx("2020ACS_DemographicHousingEstimates_CensusTracks_WorkingCopy.xlsx", skip = 4)
+CT_2020_1  <- read_xlsx("2020ACS_DemographicHousingEstimates_CensusTracts_WorkingCopy.xlsx", skip = 4)
+
+#Renaming  column  variables
+#Use  data  dictionary
+updated_names  <-
+  c(
+  )
+    
+#somethign to do with datapasta - I forgot how to do it. I think this is the page 
+#https://cran.r-project.org/web/packages/datapasta/vignettes/how-to-datapasta.html
