@@ -1,4 +1,4 @@
-#Purpose:This script is used to clean the 2020 demographic and housing estimates census tract data that I pulled from the Census
+#Purpose:This script is used to clean the 2020 demographic and housing estimates census tract data, Data from Census' American Community Survey
 
 #Notes:
 #1. If you have ways to improve the code below, feel free to make changes and submit a code request
@@ -11,6 +11,7 @@ library(httr)
 library(rlang)
 library(dplyr)
 library(janitor)
+library(stringr)
 
 #Understanding which path directory R is looking at
 getwd()
@@ -126,5 +127,44 @@ CT_2020_2  <-
     
 #Subsetting  out  the  columns  with  no  data or duplicate data - see data dictionary 
 CT_2020_3 <- subset(CT_2020_2, select = -c(2, 27, 31, 35, 39, 61, 66, 74, 92))
-                               
+
+#Delete spaces 
+CT_2020_4 <- 
+  CT_2020_3 %>% 
+  mutate(CensusTract = str_trim(CT_2020_3$CensusTract, side = "both"))
+
+#Subsetting out rows
+CT_2020_5 <- 
+  subset(CT_2020_4, CT_2020_4$CensusTract != "Percent" & 
+           CT_2020_4$CensusTract != "Percent Margin of Error" & 
+           CT_2020_4$CensusTract != "Margin of Error")
+
+#Getting rid of Census Tract rows
+CT_2020_5 <- CT_2020_5[ grep("Census", CT_2020_5$CensusTract, invert = TRUE) , ]
+
+#Pulled out Census Tract and cleaned it up
+CT_2020_5.1 <- 
+  subset(CT_2020_4, CT_2020_4$CensusTract != "Percent" & 
+           CT_2020_4$CensusTract != "Percent Margin of Error" & 
+           CT_2020_4$CensusTract != "Margin of Error" &
+           CT_2020_4$CensusTract != "Estimate")
+
+CT_2020_5.2 <- 
+  CT_2020_5.1[1]
+
+CT_2020_5.2$CensusTract <- 
+  gsub("[a-zA-Z,]", "", CT_2020_5.2$CensusTract)  
+
+#Merge with CT_2020_5 
+CT_2020_Merge <- cbind(CT_2020_5.2, CT_2020_5)
+
+#Don't actually need the Census Tract = Estimate column
+CT_2020_final <- subset(CT_2020_Merge, select = -c(2))
+
+#Setting working directory
+setwd("C:/Users/slawinskimc/OneDrive - Florida Department of Health/Documents/GitHub/Census")
+
+#Write to CSV file 
+write_excel_csv(CT_2020_final, "2020ACS_DemographicHousingEstimates_CensusTracts_Clean.csv")
+
                                
