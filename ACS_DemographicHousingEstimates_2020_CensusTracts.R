@@ -139,6 +139,15 @@ CT_2020_5 <-
            CT_2020_4$CensusTract != "Percent Margin of Error" & 
            CT_2020_4$CensusTract != "Margin of Error")
 
+#splitting CensusTract variable
+CT_2020_6 <- CT_2020_5 
+CT_2020_6[c('CT', 'County', 'State')] <- str_split_fixed(CT_2020_6$CensusTract, ',', 3)
+
+###############Left Off Here###############
+#deleting Estimate
+  CT_2020_6 = CT_2020_6[!grepl("Estimate",CT_2020_6$V1),]
+  print(new_df)
+
 #Getting rid of Census Tract rows
 CT_2020_5 <- CT_2020_5[ grep("Census", CT_2020_5$CensusTract, invert = TRUE) , ]
 
