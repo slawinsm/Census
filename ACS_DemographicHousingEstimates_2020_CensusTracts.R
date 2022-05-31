@@ -143,32 +143,33 @@ CT_2020_5 <-
 CT_2020_6 <- CT_2020_5 
 CT_2020_6[c('CT', 'County', 'State')] <- str_split_fixed(CT_2020_6$CensusTract, ',', 3)
 
-###############Left Off Here###############
-#deleting Estimate
-  CT_2020_6 = CT_2020_6[!grepl("Estimate",CT_2020_6$V1),]
-  print(new_df)
+#Exporting to Excel - It is just easier for me to quickly clean it up here
+#In retrospect, I should have just turned the data from long to wide
+#Setting working directory
+setwd("C:/Users/slawinskimc/OneDrive - Florida Department of Health/Documents/GitHub/Census")
+write_excel_csv(CT_2020_6, "2020ACS_DemographicHousingEstimates_CensusTracts_Working Copy2.csv")
 
 #Getting rid of Census Tract rows
-CT_2020_5 <- CT_2020_5[ grep("Census", CT_2020_5$CensusTract, invert = TRUE) , ]
+#CT_2020_5 <- CT_2020_5[ grep("Census", CT_2020_5$CensusTract, invert = TRUE) , ]
 
 #Pulled out Census Tract and cleaned it up
-CT_2020_5.1 <- 
-  subset(CT_2020_4, CT_2020_4$CensusTract != "Percent" & 
-           CT_2020_4$CensusTract != "Percent Margin of Error" & 
-           CT_2020_4$CensusTract != "Margin of Error" &
-           CT_2020_4$CensusTract != "Estimate")
+#CT_2020_5.1 <- 
+#  subset(CT_2020_4, CT_2020_4$CensusTract != "Percent" & 
+#           CT_2020_4$CensusTract != "Percent Margin of Error" & 
+#           CT_2020_4$CensusTract != "Margin of Error" &
+#           CT_2020_4$CensusTract != "Estimate")
 
-CT_2020_5.2 <- 
-  CT_2020_5.1[1]
+#CT_2020_5.2 <- 
+#  CT_2020_5.1[1]
 
-CT_2020_5.2$CensusTract <- 
-  gsub("[a-zA-Z,]", "", CT_2020_5.2$CensusTract)  
+#CT_2020_5.2$CensusTract <- 
+#  gsub("[a-zA-Z,]", "", CT_2020_5.2$CensusTract)  
 
 #Merge with CT_2020_5 
-CT_2020_Merge <- cbind(CT_2020_5.2, CT_2020_5)
+#CT_2020_Merge <- cbind(CT_2020_5.2, CT_2020_5)
 
 #Don't actually need the Census Tract = Estimate column
-CT_2020_final <- subset(CT_2020_Merge, select = -c(2))
+#CT_2020_final <- subset(CT_2020_Merge, select = -c(2))
 
 #Setting working directory
 setwd("C:/Users/slawinskimc/OneDrive - Florida Department of Health/Documents/GitHub/Census")
